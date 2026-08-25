@@ -14,6 +14,16 @@ const POCKET_HEIGHT = 92;
 const POCKET_SCORES = [10, 30, 50, 100, 50, 30];
 const POCKET_WIDTH = BOARD_WIDTH / POCKET_SCORES.length;
 const SHOT_COOLDOWN = 160;
+const LAUNCH_Y = BOARD_HEIGHT - 62;
+const LAUNCHER_Y = LAUNCH_Y;
+const INITIAL_VY = -10.8;
+const INITIAL_VX_FACTOR = 0.03;
+const GRAVITY = 0.27;
+const AIR_DAMPING = 0.998;
+const WALL_BOUNCE = 0.72;
+const TOP_BOUNCE = 0.55;
+const PIN_RESTITUTION = 0.72;
+const DIVIDER_BOUNCE = 0.65;
 
 const balls = [];
 const pins = [];
@@ -64,9 +74,11 @@ function resetGame() {
   gameOver = false;
   updateHud();
   gameOverEl.classList.add('hidden');
-  if (animationFrameId === null) {
-    tick();
+  if (animationFrameId !== null) {
+    cancelAnimationFrame(animationFrameId);
+    animationFrameId = null;
   }
+  tick();
 }
 
 function updateHud() {
@@ -90,9 +102,9 @@ function launchBall(screenX) {
 
   balls.push({
     x,
-    y: BOARD_HEIGHT - 62,
-    vx: (x - BOARD_WIDTH / 2) * 0.03,
-    vy: -10.8,
+    y: LAUNCH_Y,
+    vx: (x - BOARD_WIDTH / 2) * INITIAL_VX_FACTOR,
+    vy: INITIAL_VY,
     r: BALL_RADIUS,
     settled: false,
   });
@@ -119,9 +131,8 @@ function collideCircle(ball, pin) {
 
   const normalVelocity = ball.vx * nx + ball.vy * ny;
   if (normalVelocity < 0) {
-    const restitution = 0.72;
-    ball.vx -= (1 + restitution) * normalVelocity * nx;
-    ball.vy -= (1 + restitution) * normalVelocity * ny;
+    ball.vx -= (1 + PIN_RESTITUTION) * normalVelocity * nx;
+    ball.vy -= (1 + PIN_RESTITUTION) * normalVelocity * ny;
   }
 }
 
@@ -140,32 +151,32 @@ function collideDivider(ball, divider) {
 
   if (ball.x < divider.x) {
     ball.x = left - ball.r;
-    ball.vx = -Math.abs(ball.vx) * 0.65;
+    ball.vx = -Math.abs(ball.vx) * DIVIDER_BOUNCE;
   } else {
     ball.x = right + ball.r;
-    ball.vx = Math.abs(ball.vx) * 0.65;
+    ball.vx = Math.abs(ball.vx) * DIVIDER_BOUNCE;
   }
 }
 
 function updateBall(ball) {
-  ball.vy += 0.27;
-  ball.vx *= 0.998;
-  ball.vy *= 0.998;
+  ball.vy += GRAVITY;
+  ball.vx *= AIR_DAMPING;
+  ball.vy *= AIR_DAMPING;
 
   ball.x += ball.vx;
   ball.y += ball.vy;
 
   if (ball.x - ball.r < 0) {
     ball.x = ball.r;
-    ball.vx = Math.abs(ball.vx) * 0.72;
+    ball.vx = Math.abs(ball.vx) * WALL_BOUNCE;
   } else if (ball.x + ball.r > BOARD_WIDTH) {
     ball.x = BOARD_WIDTH - ball.r;
-    ball.vx = -Math.abs(ball.vx) * 0.72;
+    ball.vx = -Math.abs(ball.vx) * WALL_BOUNCE;
   }
 
   if (ball.y - ball.r < 0) {
     ball.y = ball.r;
-    ball.vy = Math.abs(ball.vy) * 0.55;
+    ball.vy = Math.abs(ball.vy) * TOP_BOUNCE;
   }
 
   for (const pin of pins) {
@@ -227,7 +238,7 @@ function drawBoard() {
   }
 
   ctx.beginPath();
-  ctx.arc(launcherX, BOARD_HEIGHT - 32, 10, 0, Math.PI * 2);
+  ctx.arc(launcherX, LAUNCHER_Y, 10, 0, Math.PI * 2);
   ctx.fillStyle = '#d99e4e';
   ctx.fill();
 }
