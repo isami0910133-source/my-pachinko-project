@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>パチンコゲーム</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 パチンコゲーム</h1>
+        <canvas id="gameCanvas" width="400" height="600"></canvas>
+        <div class="info">
+            <p>スコア: <span id="score">0</span></p>
+            <p>玉の数: <span id="ballCount">10</span></p>
+        </div>
+        <button id="restartBtn" onclick="restartGame()">ゲーム再開</button>
+    </div>
+    <script src="game.js"></script>
+</body>
+</html>

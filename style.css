@@ -1,0 +1,77 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    text-align: center;
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+#gameCanvas {
+    border: 3px solid #333;
+    background: linear-gradient(180deg, #fff 0%, #f0f0f0 100%);
+    display: block;
+    margin: 0 auto 20px;
+    cursor: pointer;
+    border-radius: 10px;
+}
+
+.info {
+    font-size: 18px;
+    margin: 15px 0;
+    color: #333;
+}
+
+.info p {
+    margin: 8px 0;
+}
+
+#score {
+    font-weight: bold;
+    color: #667eea;
+}
+
+#ballCount {
+    font-weight: bold;
+    color: #764ba2;
+}
+
+#restartBtn {
+    padding: 12px 30px;
+    font-size: 16px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#restartBtn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+#restartBtn:active {
+    transform: scale(0.98);
+}
