@@ -15,7 +15,6 @@ const POCKET_SCORES = [10, 30, 50, 100, 50, 30];
 const POCKET_WIDTH = BOARD_WIDTH / POCKET_SCORES.length;
 const SHOT_COOLDOWN = 160;
 const LAUNCH_Y = BOARD_HEIGHT - 62;
-const LAUNCHER_Y = LAUNCH_Y;
 const INITIAL_VY = -10.8;
 const INITIAL_VX_FACTOR = 0.03;
 const GRAVITY = 0.27;
@@ -137,24 +136,35 @@ function collideCircle(ball, pin) {
 }
 
 function collideDivider(ball, divider) {
-  if (
-    ball.x + ball.r < divider.x - divider.w / 2 ||
-    ball.x - ball.r > divider.x + divider.w / 2 ||
-    ball.y + ball.r < divider.y ||
-    ball.y - ball.r > divider.y + divider.h
-  ) {
+  const left = divider.x - divider.w / 2;
+  const right = divider.x + divider.w / 2;
+  const top = divider.y;
+  const bottom = divider.y + divider.h;
+  const closestX = Math.max(left, Math.min(ball.x, right));
+  const closestY = Math.max(top, Math.min(ball.y, bottom));
+  const dx = ball.x - closestX;
+  const dy = ball.y - closestY;
+
+  if (dx * dx + dy * dy > ball.r * ball.r) {
     return;
   }
 
-  const left = divider.x - divider.w / 2;
-  const right = divider.x + divider.w / 2;
-
-  if (ball.x < divider.x) {
+  if (Math.abs(dx) >= Math.abs(dy)) {
+    if (ball.x > divider.x) {
+      ball.x = right + ball.r;
+      ball.vx = Math.abs(ball.vx) * DIVIDER_BOUNCE;
+      return;
+    }
     ball.x = left - ball.r;
     ball.vx = -Math.abs(ball.vx) * DIVIDER_BOUNCE;
   } else {
-    ball.x = right + ball.r;
-    ball.vx = Math.abs(ball.vx) * DIVIDER_BOUNCE;
+    if (ball.y < top + divider.h / 2) {
+      ball.y = top - ball.r;
+      ball.vy = -Math.abs(ball.vy) * DIVIDER_BOUNCE;
+    } else {
+      ball.y = bottom + ball.r;
+      ball.vy = Math.abs(ball.vy) * DIVIDER_BOUNCE;
+    }
   }
 }
 
@@ -238,7 +248,7 @@ function drawBoard() {
   }
 
   ctx.beginPath();
-  ctx.arc(launcherX, LAUNCHER_Y, 10, 0, Math.PI * 2);
+  ctx.arc(launcherX, LAUNCH_Y, 10, 0, Math.PI * 2);
   ctx.fillStyle = '#d99e4e';
   ctx.fill();
 }
