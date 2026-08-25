@@ -24,6 +24,7 @@ let ballsRemaining = MAX_BALLS;
 let gameOver = false;
 let lastShotAt = 0;
 let launcherX = BOARD_WIDTH / 2;
+let animationFrameId = null;
 
 function setupPins() {
   pins.length = 0;
@@ -63,6 +64,9 @@ function resetGame() {
   gameOver = false;
   updateHud();
   gameOverEl.classList.add('hidden');
+  if (animationFrameId === null) {
+    tick();
+  }
 }
 
 function updateHud() {
@@ -229,26 +233,28 @@ function drawBoard() {
 }
 
 function tick() {
-  if (!gameOver) {
-    for (const ball of balls) {
-      updateBall(ball);
-    }
+  for (const ball of balls) {
+    updateBall(ball);
+  }
 
-    for (let i = balls.length - 1; i >= 0; i -= 1) {
-      if (balls[i].settled) {
-        balls.splice(i, 1);
-      }
-    }
-
-    if (ballsRemaining === 0 && balls.length === 0) {
-      gameOver = true;
-      finalScoreEl.textContent = score;
-      gameOverEl.classList.remove('hidden');
+  for (let i = balls.length - 1; i >= 0; i -= 1) {
+    if (balls[i].settled) {
+      balls.splice(i, 1);
     }
   }
 
+  if (ballsRemaining === 0 && balls.length === 0) {
+    gameOver = true;
+    finalScoreEl.textContent = score;
+    gameOverEl.classList.remove('hidden');
+  }
+
   drawBoard();
-  requestAnimationFrame(tick);
+  if (gameOver) {
+    animationFrameId = null;
+    return;
+  }
+  animationFrameId = requestAnimationFrame(tick);
 }
 
 canvas.addEventListener('pointerdown', (event) => {
@@ -262,4 +268,3 @@ restartBtn.addEventListener('click', resetGame);
 setupPins();
 setupDividers();
 resetGame();
-requestAnimationFrame(tick);
