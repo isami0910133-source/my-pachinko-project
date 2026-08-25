@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Webパチンコゲーム</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="game-shell">
+      <header class="hud">
+        <h1>パチンコ</h1>
+        <div class="stats">
+          <span>スコア: <strong id="score">0</strong></span>
+          <span>残り玉: <strong id="balls">15</strong></span>
+        </div>
+      </header>
+
+      <section class="board-wrap">
+        <canvas id="gameCanvas" width="420" height="760" aria-label="パチンコ台"></canvas>
+        <div id="gameOver" class="overlay hidden" role="dialog" aria-live="polite">
+          <div class="overlay-card">
+            <h2>ゲームオーバー</h2>
+            <p>最終スコア: <strong id="finalScore">0</strong></p>
+            <button id="restartBtn" type="button">リスタート</button>
+          </div>
+        </div>
+      </section>
+
+      <p class="hint">クリック/タップで玉を発射</p>
+    </main>
+
+    <script src="game.js" defer></script>
+  </body>
+</html>
