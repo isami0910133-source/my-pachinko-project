@@ -170,6 +170,10 @@ function collideDivider(ball, divider) {
 }
 
 function updateBall(ball) {
+  if (ball.settled) {
+    return;
+  }
+
   ball.vy += GRAVITY;
   ball.vx *= AIR_DAMPING;
   ball.vy *= AIR_DAMPING;
@@ -269,6 +273,7 @@ function tick() {
     gameOver = true;
     finalScoreEl.textContent = score;
     gameOverEl.classList.remove('hidden');
+    restartBtn.focus();
   }
 
   drawBoard();
